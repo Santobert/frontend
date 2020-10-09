@@ -18,6 +18,7 @@ import memoizeOne from "memoize-one";
 import { fireEvent } from "../../common/dom/fire_event";
 import { computeDomain } from "../../common/entity/compute_domain";
 import { computeStateName } from "../../common/entity/compute_state_name";
+import { fuzzySequentialMatch } from "../../common/string/sequence_matching";
 import { PolymerChangedEvent } from "../../polymer-types";
 import { HomeAssistant } from "../../types";
 import "../ha-icon-button";
@@ -275,8 +276,11 @@ export class HaEntityPicker extends LitElement {
 
     const filteredStates = states.filter(
       (state) =>
-        state.entity_id.toLowerCase().includes(filterString) ||
-        computeStateName(state).toLowerCase().includes(filterString)
+        fuzzySequentialMatch(filterString, state.entity_id.toLowerCase()) ||
+        fuzzySequentialMatch(
+          filterString,
+          computeStateName(state).toLowerCase()
+        )
     );
 
     (this._comboBox as any).filteredItems = filteredStates;
